@@ -78,6 +78,14 @@ namespace MiniScratchApp
                     newLocation.X += e.X - StartPoint.X;
                     newLocation.Y += e.Y - StartPoint.Y;
 
+                    // Ensure the control doesn't go beyond the form's boundaries
+                    int maxX = this.ClientSize.Width - control.Width;  // Right boundary
+                    int maxY = this.ClientSize.Height - control.Height; // Bottom boundary
+
+                    // Clamp the X and Y coordinates within the boundaries
+                    newLocation.X = Math.Max(0, Math.Min(newLocation.X, maxX)); // Ensure it's between 0 and maxX
+                    newLocation.Y = Math.Max(0, Math.Min(newLocation.Y, maxY)); // Ensure it's between 0 and maxY
+
                     // Update the control's location
                     control.Location = newLocation;
                 }

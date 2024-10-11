@@ -10,23 +10,27 @@ namespace MiniScratchApp.Client
     public class ScratchHttpClient
     {
         private readonly HttpClient _client;
+        private CancellationTokenSource _cancellationTokenSource;
 
         public ScratchHttpClient()
         {
             _client = new HttpClient();
+            _cancellationTokenSource = new CancellationTokenSource();
         }
 
         public async Task SendRequest(string url, string messageBody, string httpHeaders)
         {
             using (var client = new HttpClient())
             {
+                var cancellationToken = _cancellationTokenSource.Token;
+
                 // TODO: fix this
                 var method = "POST";
 
                 // Create a new HTTP request with the method you specified (GET, POST, PUT, DELETE)
                 var request = new HttpRequestMessage(new HttpMethod(method), url);
 
-                // Додај HTTP headers
+                // Add HTTP headers
                 foreach (var header in httpHeaders.Split(new[] { '\n', '\r' }, StringSplitOptions.RemoveEmptyEntries))
                 {
                     var splitHeader = header.Split(':');
@@ -47,16 +51,26 @@ namespace MiniScratchApp.Client
                 try
                 {
                     // Send the request and show the response
-                    var response = await client.SendAsync(request);
+                    var response = await client.SendAsync(request, cancellationToken);
                     var responseText = await response.Content.ReadAsStringAsync();
                     MessageBox.Show($"Response: {responseText}");
                 }
+                catch (TaskCanceledException)
+                {
+                    MessageBox.Show("Request was canceled.");
+                }
                 catch (Exception ex)
                 {
-                    // Прикажи грешка доколку настане некој проблем при праќање на барањето
                     MessageBox.Show($"Error: {ex.Message}");
                 }
             }
+        }
+
+        public void Stop()
+        {
+            _cancellationTokenSource.Cancel();
+            Console.WriteLine("Client stopped.");
+            _cancellationTokenSource = new CancellationTokenSource();
         }
     }
 }

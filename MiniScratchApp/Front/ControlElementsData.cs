@@ -13,7 +13,8 @@ namespace MiniScratchApp.Front
         public Point TxtBoxInboundPortPosition { get; set; }
         public Point TxtBoxOutboundAddressPosition { get; set; }
         public Point TxtBoxOutboundPortPosition { get; set; }
-        public Point TextBoxMessageBodyPosition { get; set; }
+        public Point TextBoxBodyPosition { get; set; }
+        public Point TextBoxHeadersPosition {  get; set; }
         public Point TextBoxIncomingRequestsPosition { get; set; }
 
         // Values
@@ -21,7 +22,9 @@ namespace MiniScratchApp.Front
         public string TxtBoxInboundPortText { get; set; } = null!;
         public string TxtBoxOutboundAddressText { get; set; } = null!;
         public string TxtBoxOutboundPortText { get; set; } = null!;
-        public string TextBoxSeMessageBodyText { get; set; } = null!;
+        public string TextBoxBodyText { get; set; } = null!;
+        public string TextBoxHeadersText { get; set; } = null!;
         public string TextBoxIncomingRequestsText { get; set; } = null!;
+        public int ComboBoxSelectedIndex { get; set; }
     }
 }

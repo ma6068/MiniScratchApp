@@ -33,17 +33,20 @@ namespace MiniScratchApp.Server
                 {
                     var context = await _listener.GetContextAsync();
                     Console.WriteLine("Received request...");
+                    var request = context.Request;
 
-                    // Process the request (e.g., read incoming body)
-                    using (var reader = new StreamReader(context.Request.InputStream))
-                    {
-                        string body = reader.ReadToEnd();
-                        Console.WriteLine($"Received body: {body}");
-                    }
+                    // Extracting details from the request
+                    string method = request.HttpMethod;
+                    string url = request.Url.ToString();
+                    string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+                    // Logging the incoming request with timestamp
+                    string logEntry = $"{timestamp}: {method} request received at {url}";
+                    // TODO: write this in incoming requests
 
                     // Send response
                     var response = context.Response;
-                    var responseString = "Hello from server!";
+                    var responseString = "Request received!";
                     var buffer = System.Text.Encoding.UTF8.GetBytes(responseString);
                     response.ContentLength64 = buffer.Length;
                     await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
@@ -60,8 +63,13 @@ namespace MiniScratchApp.Server
         public void Stop()
         {
             _listener.Stop();
-            _listener.Close();
             Console.WriteLine("Server stopped.");
+        }
+
+        public void Close()
+        {
+            _listener.Close();
+            Console.WriteLine("Server closed.");
         }
     }
 }

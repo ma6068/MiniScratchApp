@@ -32,16 +32,19 @@
             TxtBoxInboundPort = new TextBox();
             TxtBoxOutboundAddress = new TextBox();
             TxtBoxOutboundPort = new TextBox();
-            TextBoxMessageBody = new TextBox();
+            TextBoxBody = new TextBox();
             TextBoxIncomingRequests = new TextBox();
-            BtnSave = new Button();
+            BtnSaveData = new Button();
             BtnStart = new Button();
             BtnStop = new Button();
+            TextBoxHeaders = new TextBox();
+            PanelRun = new Panel();
+            ComboBoxMethod = new ComboBox();
             SuspendLayout();
             // 
             // TxtBoxInboundAddress
             // 
-            TxtBoxInboundAddress.Location = new Point(108, 76);
+            TxtBoxInboundAddress.Location = new Point(127, 76);
             TxtBoxInboundAddress.Name = "TxtBoxInboundAddress";
             TxtBoxInboundAddress.PlaceholderText = "Inbound Address";
             TxtBoxInboundAddress.Size = new Size(148, 27);
@@ -52,7 +55,7 @@
             // 
             // TxtBoxInboundPort
             // 
-            TxtBoxInboundPort.Location = new Point(281, 76);
+            TxtBoxInboundPort.Location = new Point(296, 76);
             TxtBoxInboundPort.Name = "TxtBoxInboundPort";
             TxtBoxInboundPort.PlaceholderText = "Inbound Port";
             TxtBoxInboundPort.Size = new Size(148, 27);
@@ -63,7 +66,7 @@
             // 
             // TxtBoxOutboundAddress
             // 
-            TxtBoxOutboundAddress.Location = new Point(108, 150);
+            TxtBoxOutboundAddress.Location = new Point(127, 150);
             TxtBoxOutboundAddress.Name = "TxtBoxOutboundAddress";
             TxtBoxOutboundAddress.PlaceholderText = "Outbound Address";
             TxtBoxOutboundAddress.Size = new Size(148, 27);
@@ -74,7 +77,7 @@
             // 
             // TxtBoxOutboundPort
             // 
-            TxtBoxOutboundPort.Location = new Point(281, 150);
+            TxtBoxOutboundPort.Location = new Point(320, 150);
             TxtBoxOutboundPort.Name = "TxtBoxOutboundPort";
             TxtBoxOutboundPort.PlaceholderText = "Outbound Port";
             TxtBoxOutboundPort.Size = new Size(148, 27);
@@ -83,20 +86,20 @@
             TxtBoxOutboundPort.MouseMove += TxtBox_MouseMove;
             TxtBoxOutboundPort.MouseUp += TxtBox_MouseUp;
             // 
-            // TextBoxMessageBody
+            // TextBoxBody
             // 
-            TextBoxMessageBody.Location = new Point(616, 76);
-            TextBoxMessageBody.Name = "TextBoxMessageBody";
-            TextBoxMessageBody.PlaceholderText = "Sending message";
-            TextBoxMessageBody.Size = new Size(142, 27);
-            TextBoxMessageBody.TabIndex = 4;
-            TextBoxMessageBody.MouseDown += TxtBox_MouseDown;
-            TextBoxMessageBody.MouseMove += TxtBox_MouseMove;
-            TextBoxMessageBody.MouseUp += TxtBox_MouseUp;
+            TextBoxBody.Location = new Point(549, 76);
+            TextBoxBody.Name = "TextBoxBody";
+            TextBoxBody.PlaceholderText = "Body";
+            TextBoxBody.Size = new Size(142, 27);
+            TextBoxBody.TabIndex = 4;
+            TextBoxBody.MouseDown += TxtBox_MouseDown;
+            TextBoxBody.MouseMove += TxtBox_MouseMove;
+            TextBoxBody.MouseUp += TxtBox_MouseUp;
             // 
             // TextBoxIncomingRequests
             // 
-            TextBoxIncomingRequests.Location = new Point(616, 150);
+            TextBoxIncomingRequests.Location = new Point(496, 134);
             TextBoxIncomingRequests.Multiline = true;
             TextBoxIncomingRequests.Name = "TextBoxIncomingRequests";
             TextBoxIncomingRequests.PlaceholderText = "Incoming requests";
@@ -106,19 +109,19 @@
             TextBoxIncomingRequests.MouseMove += TxtBox_MouseMove;
             TextBoxIncomingRequests.MouseUp += TxtBox_MouseUp;
             // 
-            // BtnSave
+            // BtnSaveData
             // 
-            BtnSave.Location = new Point(209, 308);
-            BtnSave.Name = "BtnSave";
-            BtnSave.Size = new Size(94, 29);
-            BtnSave.TabIndex = 6;
-            BtnSave.Text = "Save";
-            BtnSave.UseVisualStyleBackColor = true;
-            BtnSave.Click += BtnSave_Click;
+            BtnSaveData.Location = new Point(785, 271);
+            BtnSaveData.Name = "BtnSaveData";
+            BtnSaveData.Size = new Size(94, 29);
+            BtnSaveData.TabIndex = 6;
+            BtnSaveData.Text = "Save data";
+            BtnSaveData.UseVisualStyleBackColor = true;
+            BtnSaveData.Click += BtnSaveData_Click;
             // 
             // BtnStart
             // 
-            BtnStart.Location = new Point(430, 308);
+            BtnStart.Location = new Point(785, 327);
             BtnStart.Name = "BtnStart";
             BtnStart.Size = new Size(94, 29);
             BtnStart.TabIndex = 7;
@@ -128,7 +131,7 @@
             // 
             // BtnStop
             // 
-            BtnStop.Location = new Point(616, 308);
+            BtnStop.Location = new Point(785, 388);
             BtnStop.Name = "BtnStop";
             BtnStop.Size = new Size(94, 29);
             BtnStop.TabIndex = 8;
@@ -136,20 +139,51 @@
             BtnStop.UseVisualStyleBackColor = true;
             BtnStop.Click += BtnStopClick;
             // 
+            // TextBoxHeaders
+            // 
+            TextBoxHeaders.Location = new Point(747, 67);
+            TextBoxHeaders.Name = "TextBoxHeaders";
+            TextBoxHeaders.PlaceholderText = "Headers";
+            TextBoxHeaders.Size = new Size(142, 27);
+            TextBoxHeaders.TabIndex = 9;
+            TextBoxHeaders.MouseDown += TxtBox_MouseDown;
+            TextBoxHeaders.MouseMove += TxtBox_MouseMove;
+            TextBoxHeaders.MouseUp += TxtBox_MouseUp;
+            // 
+            // PanelRun
+            // 
+            PanelRun.BackColor = SystemColors.ActiveCaptionText;
+            PanelRun.Location = new Point(127, 213);
+            PanelRun.Name = "PanelRun";
+            PanelRun.Size = new Size(638, 215);
+            PanelRun.TabIndex = 10;
+            // 
+            // ComboBoxMethod
+            // 
+            ComboBoxMethod.FormattingEnabled = true;
+            ComboBoxMethod.Items.AddRange(new object[] { "GET", "POST", "PUT", "DELETE" });
+            ComboBoxMethod.Location = new Point(785, 213);
+            ComboBoxMethod.Name = "ComboBoxMethod";
+            ComboBoxMethod.Size = new Size(94, 28);
+            ComboBoxMethod.TabIndex = 11;
+            // 
             // Form
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(995, 528);
-            Controls.Add(BtnSave);
+            Controls.Add(ComboBoxMethod);
             Controls.Add(BtnStop);
             Controls.Add(BtnStart);
-            Controls.Add(TextBoxIncomingRequests);
-            Controls.Add(TextBoxMessageBody);
-            Controls.Add(TxtBoxOutboundPort);
+            Controls.Add(BtnSaveData);
             Controls.Add(TxtBoxOutboundAddress);
+            Controls.Add(TxtBoxOutboundPort);
+            Controls.Add(TextBoxIncomingRequests);
+            Controls.Add(TextBoxHeaders);
+            Controls.Add(TextBoxBody);
             Controls.Add(TxtBoxInboundPort);
             Controls.Add(TxtBoxInboundAddress);
+            Controls.Add(PanelRun);
             Name = "Form";
             Text = "Form";
             ResumeLayout(false);
@@ -162,10 +196,13 @@
         private TextBox TxtBoxInboundPort;
         private TextBox TxtBoxOutboundAddress;
         private TextBox TxtBoxOutboundPort;
-        private TextBox TextBoxMessageBody;
+        private TextBox TextBoxBody;
+        private TextBox TextBoxHeaders;
         private TextBox TextBoxIncomingRequests;
-        private Button BtnSave;
+        private Button BtnSaveData;
         private Button BtnStart;
         private Button BtnStop;
+        private Panel PanelRun;
+        private ComboBox ComboBoxMethod;
     }
 }

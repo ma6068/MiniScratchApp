@@ -1,7 +1,7 @@
+using MiniScratchApp.Client;
 using MiniScratchApp.Front;
 using MiniScratchApp.Server;
 using Newtonsoft.Json;
-using System.Security.Policy;
 
 namespace MiniScratchApp
 {
@@ -13,16 +13,19 @@ namespace MiniScratchApp
         private Point StartPoint = new Point(0, 0);
         private bool IsServerRunning = false;
         private ScratchHttpServer ScratchHttpServer = new ScratchHttpServer();
+        private ScratchHttpClient ScratchHttpClient = new ScratchHttpClient();
 
         public Form()
         {
             InitializeComponent();
             LoadControlData();
         }
-        
+
         protected override void OnFormClosing(FormClosingEventArgs e)
         {
             SaveControlData();
+            ScratchHttpServer.Stop();
+            ScratchHttpServer.Close();
             base.OnFormClosing(e);
         }
 
@@ -41,7 +44,8 @@ namespace MiniScratchApp
                         TxtBoxInboundPort.Location = controlElementsData.TxtBoxInboundPortPosition;
                         TxtBoxOutboundAddress.Location = controlElementsData.TxtBoxOutboundAddressPosition;
                         TxtBoxOutboundPort.Location = controlElementsData.TxtBoxOutboundPortPosition;
-                        TextBoxMessageBody.Location = controlElementsData.TextBoxMessageBodyPosition;
+                        TextBoxBody.Location = controlElementsData.TextBoxBodyPosition;
+                        TextBoxHeaders.Location = controlElementsData.TextBoxHeadersPosition;
                         TextBoxIncomingRequests.Location = controlElementsData.TextBoxIncomingRequestsPosition;
 
                         // Values  
@@ -49,8 +53,10 @@ namespace MiniScratchApp
                         TxtBoxInboundPort.Text = controlElementsData.TxtBoxInboundPortText;
                         TxtBoxOutboundAddress.Text = controlElementsData.TxtBoxOutboundAddressText;
                         TxtBoxOutboundPort.Text = controlElementsData.TxtBoxOutboundPortText;
-                        TextBoxMessageBody.Text = controlElementsData.TextBoxSeMessageBodyText;
+                        TextBoxBody.Text = controlElementsData.TextBoxBodyText;
+                        TextBoxHeaders.Text = controlElementsData.TextBoxHeadersText;
                         TextBoxIncomingRequests.Text = controlElementsData.TextBoxIncomingRequestsText;
+                        ComboBoxMethod.SelectedIndex = controlElementsData.ComboBoxSelectedIndex;
                     }
                 }
             }
@@ -58,7 +64,7 @@ namespace MiniScratchApp
             {
                 MessageBox.Show("Error loading data: " + ex.Message);
                 return;
-            }      
+            }
         }
 
         private void SaveControlData()
@@ -72,7 +78,8 @@ namespace MiniScratchApp
                     TxtBoxInboundPortPosition = TxtBoxInboundPort.Location,
                     TxtBoxOutboundAddressPosition = TxtBoxOutboundAddress.Location,
                     TxtBoxOutboundPortPosition = TxtBoxOutboundPort.Location,
-                    TextBoxMessageBodyPosition = TextBoxMessageBody.Location,
+                    TextBoxBodyPosition = TextBoxBody.Location,
+                    TextBoxHeadersPosition = TextBoxHeaders.Location,
                     TextBoxIncomingRequestsPosition = TextBoxIncomingRequests.Location,
 
                     // Values
@@ -80,17 +87,19 @@ namespace MiniScratchApp
                     TxtBoxInboundPortText = TxtBoxInboundPort.Text,
                     TxtBoxOutboundAddressText = TxtBoxOutboundAddress.Text,
                     TxtBoxOutboundPortText = TxtBoxOutboundPort.Text,
-                    TextBoxSeMessageBodyText = TextBoxMessageBody.Text,
-                    TextBoxIncomingRequestsText = TextBoxIncomingRequests.Text
+                    TextBoxBodyText = TextBoxBody.Text,
+                    TextBoxHeadersText = TextBoxHeaders.Text,
+                    TextBoxIncomingRequestsText = TextBoxIncomingRequests.Text,
+                    ComboBoxSelectedIndex = ComboBoxMethod.SelectedIndex
                 };
                 var json = JsonConvert.SerializeObject(controlElementsData);
                 File.WriteAllText(ConfigFilePath, json);
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 MessageBox.Show("Error saving data: " + ex.Message);
                 return;
-            }  
+            }
         }
 
         // Drag and drop functions
@@ -139,17 +148,14 @@ namespace MiniScratchApp
             {
                 MessageBox.Show(ex.Message);
                 return;
-            }      
+            }
         }
 
         private void TxtBox_MouseUp(object sender, MouseEventArgs e)
         {
             try
             {
-                if (e.Button == MouseButtons.Left)
-                {
-                    IsDragging = false;
-                }
+                IsDragging = false;
             }
             catch (Exception ex)
             {
@@ -159,14 +165,14 @@ namespace MiniScratchApp
         }
 
         // Buttons functions
-        private void BtnSave_Click(object sender, EventArgs e)
+        private void BtnSaveData_Click(object sender, EventArgs e)
         {
             try
             {
                 SaveControlData();
                 MessageBox.Show("Successfully saved");
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
                 return;
@@ -177,38 +183,22 @@ namespace MiniScratchApp
         {
             try
             {
-                if (IsServerRunning)
+                var setForStartServer = AllSetForStartingServer();
+                if (setForStartServer)
                 {
-                    MessageBox.Show("The server is already running. If you have input changes, please stop it and start it again. ");
-                    return;
+                    StartServer();
                 }
-                string inboundAddress = TxtBoxInboundAddress.Text;
-                string inboundPort = TxtBoxInboundPort.Text;
-                if (string.IsNullOrEmpty(inboundAddress) || string.IsNullOrEmpty(inboundPort))
+                var setForStartClient = AllSetForStartingClient();
+                if (setForStartClient)
                 {
-                    MessageBox.Show("Please enter inboundAddress and inboundPort!");
-                    return;
+                    SendRequestClient();
                 }
-
-                // Generate the full URL for the request
-                var url = $"http://{inboundAddress}:{inboundPort}/";
-                if (!IsValidUrl(url))
-                {
-                    MessageBox.Show("The final URL is not valid. Please check your inboundAddress and inboundPort");
-                    return;
-                }
-
-                ScratchHttpServer.Start(url);
-                IsServerRunning = true;
-                MessageBox.Show("Server is listening on port: " + url);
-                return;
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 MessageBox.Show(ex.Message);
                 return;
             }
-            
         }
 
         private void BtnStopClick(object sender, EventArgs e)
@@ -232,7 +222,116 @@ namespace MiniScratchApp
             }
         }
 
-        // Other private methods
+        /// <summary>
+        /// Check if the control is in panel
+        /// </summary>
+        /// <param name="control"></param>
+        /// <param name="panel"></param>
+        /// <returns></returns>
+        private bool IsControlEntirelyWithinPanel(Control control, Panel panel)
+        {
+            // Get panel's top-left corner location and its width and height (screen coordinates)
+            Point panelTopLeft = panel.PointToScreen(Point.Empty);
+            Point panelBottomRight = new Point(panelTopLeft.X + panel.Width, panelTopLeft.Y + panel.Height);
+
+            // Get control's top-left corner location and its width and height (screen coordinates)
+            Point controlTopLeft = control.PointToScreen(Point.Empty);
+            Point controlBottomRight = new Point(controlTopLeft.X + control.Width, controlTopLeft.Y + control.Height);
+
+            // Check if the entire control is within the panel's boundaries
+            return (controlTopLeft.X >= panelTopLeft.X && controlTopLeft.Y >= panelTopLeft.Y &&
+                    controlBottomRight.X <= panelBottomRight.X && controlBottomRight.Y <= panelBottomRight.Y);
+        }
+
+        /// <summary>
+        /// Checks if all required fields are inside the panel to start the server
+        /// </summary>
+        /// <returns></returns>
+        private bool AllSetForStartingServer()
+        {
+            if (IsControlEntirelyWithinPanel(TxtBoxInboundAddress, PanelRun) &&
+                IsControlEntirelyWithinPanel(TxtBoxInboundPort, PanelRun))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Checks if all required fields are inside the panel to start the client
+        /// </summary>
+        /// <returns></returns>
+        private bool AllSetForStartingClient()
+        {
+            if (IsControlEntirelyWithinPanel(TxtBoxOutboundAddress, PanelRun) &&
+               IsControlEntirelyWithinPanel(TxtBoxOutboundPort, PanelRun) &&
+               IsControlEntirelyWithinPanel(TextBoxBody, PanelRun) &&
+               IsControlEntirelyWithinPanel(TextBoxHeaders, PanelRun) &&
+               IsControlEntirelyWithinPanel(TextBoxIncomingRequests, PanelRun))
+            {
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Method for starting the server
+        /// </summary>
+        private void StartServer()
+        {
+            // If is already running we stop (maybe there is url change and we did not have multiple starts)
+            if (IsServerRunning)
+            {
+                ScratchHttpServer.Stop();
+                IsServerRunning = false;
+            }
+
+            // Validation
+            string inboundAddress = TxtBoxInboundAddress.Text;
+            string inboundPort = TxtBoxInboundPort.Text;
+            if (string.IsNullOrEmpty(inboundAddress) || string.IsNullOrEmpty(inboundPort))
+            {
+                MessageBox.Show("Please enter inboundAddress and inboundPort!");
+                return;
+            }
+
+            var url = $"http://{inboundAddress}:{inboundPort}/";
+            if (!IsValidUrl(url))
+            {
+                MessageBox.Show("The final inbound url is not valid. Please check your inboundAddress and inboundPort");
+                return;
+            }
+
+            ScratchHttpServer.Start(url);
+            IsServerRunning = true;
+            MessageBox.Show("Server is listening on port: " + url);
+            return;
+        }
+
+        /// <summary>
+        /// Method for start to send requests
+        /// </summary>
+        private void SendRequestClient()
+        {
+            string outboundAddress = TxtBoxOutboundAddress.Text;
+            string outboundPort = TxtBoxOutboundPort.Text;
+            string body = TextBoxBody.Text;
+            string headers = TextBoxHeaders.Text;
+            string incomingRequests = TextBoxIncomingRequests.Text;
+
+            if (string.IsNullOrEmpty(outboundAddress) || string.IsNullOrEmpty(outboundPort))
+            {
+                MessageBox.Show("Please enter outboundAddress and outboundPort!");
+                return;
+            }
+
+        }
+
+        /// <summary>
+        /// Check if url is valid
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
         private bool IsValidUrl(string url)
         {
             return Uri.TryCreate(url, UriKind.Absolute, out Uri uriResult) &&

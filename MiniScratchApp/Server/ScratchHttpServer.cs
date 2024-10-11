@@ -23,6 +23,7 @@ namespace MiniScratchApp.Server
             _listener.Start();
             Console.WriteLine("Server started. Listening for requests...");
             Task.Run(() => ListenLoop());
+            MessageBox.Show("Server is listening on port: " + url);
         }
 
         private async Task ListenLoop()

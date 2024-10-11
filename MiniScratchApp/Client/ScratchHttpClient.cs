@@ -18,14 +18,11 @@ namespace MiniScratchApp.Client
             _cancellationTokenSource = new CancellationTokenSource();
         }
 
-        public async Task SendRequest(string url, string messageBody, string httpHeaders)
+        public async Task SendRequest(string url, string method, string messageBody, string httpHeaders)
         {
             using (var client = new HttpClient())
             {
                 var cancellationToken = _cancellationTokenSource.Token;
-
-                // TODO: fix this
-                var method = "POST";
 
                 // Create a new HTTP request with the method you specified (GET, POST, PUT, DELETE)
                 var request = new HttpRequestMessage(new HttpMethod(method), url);

@@ -26,6 +26,7 @@ namespace MiniScratchApp
             SaveControlData();
             ScratchHttpServer.Stop();
             ScratchHttpServer.Close();
+            ScratchHttpClient.Stop();
             base.OnFormClosing(e);
         }
 
@@ -193,6 +194,11 @@ namespace MiniScratchApp
                 {
                     SendRequestClient();
                 }
+                if (!setForStartServer && !setForStartClient)
+                {
+                    MessageBox.Show("Please enter all the necessary elements to start the server or to send the request.");
+                    return;
+                }
             }
             catch (Exception ex)
             {
@@ -205,15 +211,10 @@ namespace MiniScratchApp
         {
             try
             {
-                if (!IsServerRunning)
-                {
-                    MessageBox.Show("The server is not running!");
-                    return;
-                }
-
                 ScratchHttpServer.Stop();
                 IsServerRunning = false;
-                MessageBox.Show("Server stopped");
+                ScratchHttpClient.Stop();
+                MessageBox.Show("The server and sending requests have been stopped.");
             }
             catch (Exception ex)
             {
@@ -259,17 +260,27 @@ namespace MiniScratchApp
 
         /// <summary>
         /// Checks if all required fields are inside the panel to start the client
+        /// Headers is not required
+        /// Body is required if we have POST or PUT request
         /// </summary>
         /// <returns></returns>
         private bool AllSetForStartingClient()
         {
-            if (IsControlEntirelyWithinPanel(TxtBoxOutboundAddress, PanelRun) &&
-               IsControlEntirelyWithinPanel(TxtBoxOutboundPort, PanelRun) &&
-               IsControlEntirelyWithinPanel(TextBoxBody, PanelRun) &&
-               IsControlEntirelyWithinPanel(TextBoxHeaders, PanelRun) &&
-               IsControlEntirelyWithinPanel(TextBoxIncomingRequests, PanelRun))
+            var addressSet = IsControlEntirelyWithinPanel(TxtBoxOutboundAddress, PanelRun);
+            var portSet = IsControlEntirelyWithinPanel(TxtBoxOutboundPort, PanelRun);
+            var bodySet = IsControlEntirelyWithinPanel(TextBoxBody, PanelRun);         
+            if (addressSet && portSet)
             {
-                return true;
+                // GET and DELETE
+                if (ComboBoxMethod.SelectedIndex == 0 || ComboBoxMethod.SelectedIndex == 3)
+                {
+                    return true;
+                }
+                // POST and PUT
+                if (bodySet)
+                {
+                    return true;
+                }
             }
             return false;
         }
@@ -295,7 +306,7 @@ namespace MiniScratchApp
                 return;
             }
 
-            var url = $"http://{inboundAddress}:{inboundPort}/";
+            var url = $"{inboundAddress}:{inboundPort}/";
             if (!IsValidUrl(url))
             {
                 MessageBox.Show("The final inbound url is not valid. Please check your inboundAddress and inboundPort");
@@ -304,27 +315,39 @@ namespace MiniScratchApp
 
             ScratchHttpServer.Start(url);
             IsServerRunning = true;
-            MessageBox.Show("Server is listening on port: " + url);
-            return;
         }
 
         /// <summary>
-        /// Method for start to send requests
+        /// Method for sending request
         /// </summary>
-        private void SendRequestClient()
+        private async void SendRequestClient()
         {
             string outboundAddress = TxtBoxOutboundAddress.Text;
             string outboundPort = TxtBoxOutboundPort.Text;
             string body = TextBoxBody.Text;
             string headers = TextBoxHeaders.Text;
-            string incomingRequests = TextBoxIncomingRequests.Text;
+            int selectedIndex = ComboBoxMethod.SelectedIndex;
 
+            // Validation
             if (string.IsNullOrEmpty(outboundAddress) || string.IsNullOrEmpty(outboundPort))
             {
                 MessageBox.Show("Please enter outboundAddress and outboundPort!");
                 return;
             }
+            if (string.IsNullOrEmpty(body) && (selectedIndex == 1 || selectedIndex == 2))
+            {
+                MessageBox.Show("Please enter body if you are using POST or PUT method");
+                return;
+            }
+            var url = $"{outboundAddress}:{outboundPort}/";
+            if (!IsValidUrl(url))
+            {
+                MessageBox.Show("The final outbound url is not valid. Please check your outboundAddress and outboundPort");
+                return;
+            }
+            var method = selectedIndex == 0 ? "GET" : selectedIndex == 1 ? "POST" : selectedIndex == 2 ? "PUT" : "DELETE";
 
+            await ScratchHttpClient.SendRequest(url, method, body, headers);
         }
 
         /// <summary>

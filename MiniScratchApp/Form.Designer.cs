@@ -88,10 +88,11 @@
             // 
             // TextBoxBody
             // 
-            TextBoxBody.Location = new Point(549, 76);
+            TextBoxBody.Location = new Point(805, 176);
+            TextBoxBody.Multiline = true;
             TextBoxBody.Name = "TextBoxBody";
             TextBoxBody.PlaceholderText = "Body";
-            TextBoxBody.Size = new Size(142, 27);
+            TextBoxBody.Size = new Size(321, 132);
             TextBoxBody.TabIndex = 4;
             TextBoxBody.MouseDown += TxtBox_MouseDown;
             TextBoxBody.MouseMove += TxtBox_MouseMove;
@@ -111,7 +112,7 @@
             // 
             // BtnSaveData
             // 
-            BtnSaveData.Location = new Point(785, 271);
+            BtnSaveData.Location = new Point(785, 400);
             BtnSaveData.Name = "BtnSaveData";
             BtnSaveData.Size = new Size(94, 29);
             BtnSaveData.TabIndex = 6;
@@ -121,7 +122,7 @@
             // 
             // BtnStart
             // 
-            BtnStart.Location = new Point(785, 327);
+            BtnStart.Location = new Point(785, 460);
             BtnStart.Name = "BtnStart";
             BtnStart.Size = new Size(94, 29);
             BtnStart.TabIndex = 7;
@@ -131,7 +132,7 @@
             // 
             // BtnStop
             // 
-            BtnStop.Location = new Point(785, 388);
+            BtnStop.Location = new Point(785, 513);
             BtnStop.Name = "BtnStop";
             BtnStop.Size = new Size(94, 29);
             BtnStop.TabIndex = 8;
@@ -141,10 +142,11 @@
             // 
             // TextBoxHeaders
             // 
-            TextBoxHeaders.Location = new Point(747, 67);
+            TextBoxHeaders.Location = new Point(805, 45);
+            TextBoxHeaders.Multiline = true;
             TextBoxHeaders.Name = "TextBoxHeaders";
             TextBoxHeaders.PlaceholderText = "Headers";
-            TextBoxHeaders.Size = new Size(142, 27);
+            TextBoxHeaders.Size = new Size(310, 114);
             TextBoxHeaders.TabIndex = 9;
             TextBoxHeaders.MouseDown += TxtBox_MouseDown;
             TextBoxHeaders.MouseMove += TxtBox_MouseMove;
@@ -153,16 +155,16 @@
             // PanelRun
             // 
             PanelRun.BackColor = SystemColors.ActiveCaptionText;
-            PanelRun.Location = new Point(127, 213);
+            PanelRun.Location = new Point(35, 242);
             PanelRun.Name = "PanelRun";
-            PanelRun.Size = new Size(638, 215);
+            PanelRun.Size = new Size(730, 300);
             PanelRun.TabIndex = 10;
             // 
             // ComboBoxMethod
             // 
             ComboBoxMethod.FormattingEnabled = true;
             ComboBoxMethod.Items.AddRange(new object[] { "GET", "POST", "PUT", "DELETE" });
-            ComboBoxMethod.Location = new Point(785, 213);
+            ComboBoxMethod.Location = new Point(785, 327);
             ComboBoxMethod.Name = "ComboBoxMethod";
             ComboBoxMethod.Size = new Size(94, 28);
             ComboBoxMethod.TabIndex = 11;
@@ -171,7 +173,8 @@
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(995, 528);
+            ClientSize = new Size(1234, 581);
+            Controls.Add(TextBoxBody);
             Controls.Add(ComboBoxMethod);
             Controls.Add(BtnStop);
             Controls.Add(BtnStart);
@@ -180,7 +183,6 @@
             Controls.Add(TxtBoxOutboundPort);
             Controls.Add(TextBoxIncomingRequests);
             Controls.Add(TextBoxHeaders);
-            Controls.Add(TextBoxBody);
             Controls.Add(TxtBoxInboundPort);
             Controls.Add(TxtBoxInboundAddress);
             Controls.Add(PanelRun);

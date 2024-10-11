@@ -9,16 +9,21 @@ namespace MiniScratchApp
     {
 
         private string ConfigFilePath = "controlPositions.json";
-        private bool IsDragging = false;
-        private Point StartPoint = new Point(0, 0);
-        private bool IsServerRunning = false;
-        private ScratchHttpServer ScratchHttpServer = new ScratchHttpServer();
-        private ScratchHttpClient ScratchHttpClient = new ScratchHttpClient();
+        private bool IsDragging;
+        private Point StartPoint;
+        private bool IsServerRunning;
+        private ScratchHttpServer ScratchHttpServer;
+        private ScratchHttpClient ScratchHttpClient;
 
         public Form()
         {
             InitializeComponent();
             LoadControlData();
+            IsDragging = false;
+            StartPoint = new Point(0, 0);
+            IsServerRunning = false;
+            ScratchHttpServer = new ScratchHttpServer();
+            ScratchHttpClient = new ScratchHttpClient();
         }
 
         protected override void OnFormClosing(FormClosingEventArgs e)

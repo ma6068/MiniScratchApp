@@ -17,21 +17,24 @@ namespace MiniScratchApp.Server
             _listener = new HttpListener();
         }
 
-        public void Start(string url)
+        public async void Start(string url, TextBox textBoxIncomingRequests)
         {
             _listener.Prefixes.Add(url);  
             _listener.Start();
             Console.WriteLine("Server started. Listening for requests...");
-            Task.Run(() => ListenLoop());
+            string result = await Task.Run(async () => await ListenLoop());
+            textBoxIncomingRequests.Text += result;
             MessageBox.Show("Server is listening on port: " + url);
         }
 
-        private async Task ListenLoop()
+        private async Task<string> ListenLoop()
         {
             while (_listener.IsListening)
             {
                 try
                 {
+                    await Task.Delay(1000);
+
                     var context = await _listener.GetContextAsync();
                     Console.WriteLine("Received request...");
                     var request = context.Request;
@@ -41,10 +44,6 @@ namespace MiniScratchApp.Server
                     string url = request.Url.ToString();
                     string timestamp = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
-                    // Logging the incoming request with timestamp
-                    string logEntry = $"{timestamp}: {method} request received at {url}";
-                    // TODO: write this in incoming requests
-
                     // Send response
                     var response = context.Response;
                     var responseString = "Request received!";
@@ -52,6 +51,10 @@ namespace MiniScratchApp.Server
                     response.ContentLength64 = buffer.Length;
                     await response.OutputStream.WriteAsync(buffer, 0, buffer.Length);
                     response.OutputStream.Close();
+
+                    // Logging the incoming request with timestamp
+                    string logEntry = $"{timestamp}: {method} request received at {url}" + Environment.NewLine;
+                    return logEntry;
                 }
                 catch (HttpListenerException)
                 {
@@ -59,6 +62,7 @@ namespace MiniScratchApp.Server
                     break;
                 }
             }
+            return "";
         }
 
         public void Stop()

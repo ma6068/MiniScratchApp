@@ -318,7 +318,7 @@ namespace MiniScratchApp
                 return;
             }
 
-            ScratchHttpServer.Start(url);
+            ScratchHttpServer.Start(url, TextBoxIncomingRequests);
             IsServerRunning = true;
         }
 

@@ -100,11 +100,11 @@
             // 
             // TextBoxIncomingRequests
             // 
-            TextBoxIncomingRequests.Location = new Point(306, 45);
+            TextBoxIncomingRequests.Location = new Point(230, 45);
             TextBoxIncomingRequests.Multiline = true;
             TextBoxIncomingRequests.Name = "TextBoxIncomingRequests";
             TextBoxIncomingRequests.PlaceholderText = "Incoming requests";
-            TextBoxIncomingRequests.Size = new Size(346, 154);
+            TextBoxIncomingRequests.Size = new Size(558, 154);
             TextBoxIncomingRequests.TabIndex = 5;
             TextBoxIncomingRequests.MouseDown += TxtBox_MouseDown;
             TextBoxIncomingRequests.MouseMove += TxtBox_MouseMove;

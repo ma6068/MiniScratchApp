@@ -17,24 +17,21 @@ namespace MiniScratchApp.Server
             _listener = new HttpListener();
         }
 
-        public async void Start(string url, TextBox textBoxIncomingRequests)
+        public void Start(string url, TextBox textBoxIncomingRequests)
         {
             _listener.Prefixes.Add(url);  
             _listener.Start();
             Console.WriteLine("Server started. Listening for requests...");
-            string result = await Task.Run(async () => await ListenLoop());
-            textBoxIncomingRequests.Text += result;
+            _ = Task.Run(async () => await ListenLoop(textBoxIncomingRequests));
             MessageBox.Show("Server is listening on port: " + url);
         }
 
-        private async Task<string> ListenLoop()
+        private async Task ListenLoop(TextBox textBoxIncomingRequests)
         {
             while (_listener.IsListening)
             {
                 try
                 {
-                    await Task.Delay(1000);
-
                     var context = await _listener.GetContextAsync();
                     Console.WriteLine("Received request...");
                     var request = context.Request;
@@ -54,7 +51,10 @@ namespace MiniScratchApp.Server
 
                     // Logging the incoming request with timestamp
                     string logEntry = $"{timestamp}: {method} request received at {url}" + Environment.NewLine;
-                    return logEntry;
+                    textBoxIncomingRequests.Invoke((Action)(() =>
+                    {
+                        textBoxIncomingRequests.Text += logEntry;
+                    }));
                 }
                 catch (HttpListenerException)
                 {
@@ -62,7 +62,6 @@ namespace MiniScratchApp.Server
                     break;
                 }
             }
-            return "";
         }
 
         public void Stop()

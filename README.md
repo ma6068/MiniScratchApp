@@ -30,3 +30,6 @@ Accept : application/json
 
 ### How the application works when the Stop button is pressed:
 - If the stop button is pressed, both the server and the client are stopped.
+
+### Where are the values and positions of the elements stored?
+- We save them in a JSON file called "controlPositions.json," which is created automatically (if it doesn't already exist). Upon restarting the application, we read all the values and positions of the elements from it.

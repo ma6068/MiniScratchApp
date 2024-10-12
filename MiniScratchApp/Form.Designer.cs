@@ -44,6 +44,7 @@
             // 
             // TxtBoxInboundAddress
             // 
+            TxtBoxInboundAddress.BackColor = SystemColors.ActiveCaption;
             TxtBoxInboundAddress.Location = new Point(62, 45);
             TxtBoxInboundAddress.Name = "TxtBoxInboundAddress";
             TxtBoxInboundAddress.PlaceholderText = "Inbound Address";
@@ -55,7 +56,8 @@
             // 
             // TxtBoxInboundPort
             // 
-            TxtBoxInboundPort.Location = new Point(62, 132);
+            TxtBoxInboundPort.BackColor = SystemColors.ActiveCaption;
+            TxtBoxInboundPort.Location = new Point(62, 88);
             TxtBoxInboundPort.Name = "TxtBoxInboundPort";
             TxtBoxInboundPort.PlaceholderText = "Inbound Port";
             TxtBoxInboundPort.Size = new Size(148, 27);
@@ -66,7 +68,7 @@
             // 
             // TxtBoxOutboundAddress
             // 
-            TxtBoxOutboundAddress.Location = new Point(62, 88);
+            TxtBoxOutboundAddress.Location = new Point(62, 132);
             TxtBoxOutboundAddress.Name = "TxtBoxOutboundAddress";
             TxtBoxOutboundAddress.PlaceholderText = "Outbound Address";
             TxtBoxOutboundAddress.Size = new Size(148, 27);

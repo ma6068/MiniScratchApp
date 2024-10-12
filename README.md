@@ -1,5 +1,8 @@
 # MiniScratchApp
 
+### How to start this application?
+- Just clone the project and open it in Visual Studio 2022. Then start the MiniScratchApp project.
+
 ### Elements in our application:
 
 - Inbound address for the server, which should follow the format {protocol}://{domain}. Example: http://localhost. For easier differentiation, it is colored in blue.

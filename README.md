@@ -32,4 +32,23 @@ Accept : application/json
 - If the stop button is pressed, both the server and the client are stopped.
 
 ### Where are the values and positions of the elements stored?
-- We save them in a JSON file called "controlPositions.json," which is created automatically (if it doesn't already exist). Upon restarting the application, we read all the values and positions of the elements from it.
+- We save them in a JSON file called "controlPositions.json," which is created automatically (if it doesn't already exist). Upon restarting the application, we read all the values and positions of the elements from it. Example:
+```shell script
+{
+  "TxtBoxInboundAddressPosition": "54, 303",
+  "TxtBoxInboundPortPosition": "230, 303",
+  "TxtBoxOutboundAddressPosition": "64, 64",
+  "TxtBoxOutboundPortPosition": "61, 125",
+  "TextBoxBodyPosition": "821, 64",
+  "TextBoxHeadersPosition": "897, 212",
+  "TextBoxIncomingRequestsPosition": "230, 45",
+  "TxtBoxInboundAddressText": "http://localhost",
+  "TxtBoxInboundPortText": "3000",
+  "TxtBoxOutboundAddressText": "http://localhost",
+  "TxtBoxOutboundPortText": "3000",
+  "TextBoxBodyText": "{\r\n\"Name\" : \"Martin\",\r\n\"Surname\" : \"Arsovski\"\r\n}",
+  "TextBoxHeadersText": "Cache-Control : no-cache\r\nAccept : application/json\n",
+  "TextBoxIncomingRequestsText": "2024-10-12 10:14:22: POST request received at http://localhost:3000/\r\n2024-10-12 10:15:26: POST request received at http://localhost:3000/\r\n2024-10-12 10:18:23: POST request received at http://localhost:3000/\r\n2024-10-12 10:21:27: POST request received at http://localhost:3000/\r\n2024-10-12 10:29:54: GET request received at http://localhost:3000/\r\n2024-10-12 10:30:03: PUT request received at http://localhost:3000/\r\n2024-10-12 10:30:11: DELETE request received at http://localhost:3000/\r\n",
+  "ComboBoxSelectedIndex": 2
+}
+```
